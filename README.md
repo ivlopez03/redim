@@ -15,6 +15,10 @@ It's very simple and easy to use.
 You can save the link and use it in your html tags instead of uploading the image from your local, and the image  is hosted by cloudinary.
 
 
+https://user-images.githubusercontent.com/111618970/223524690-1c5f4a29-bf28-43ec-a6b2-07e959fd7c4f.mp4
+
+
+
 ##
 
 ![ezgif-5-fb3258d7ad](https://user-images.githubusercontent.com/111618970/223301110-3362515c-a06d-43c8-8795-6b6baf039cfe.gif)
