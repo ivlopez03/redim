@@ -5,6 +5,7 @@
   "publisher": "redim",
   "version": "0.0.1",
   "pricing": "Free",
+  "icon": "logoredim (1) (1).png",
   "engines": {
     "vscode": "^1.76.0"
   },
