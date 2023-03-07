@@ -1,7 +1,9 @@
 # redim README
 <p align="center"><img width="115" alt="logoredim" src="https://user-images.githubusercontent.com/111618970/223301921-ff9234ed-1103-4a2c-a5fe-7bd1769a54bc.PNG">
 
-Redim is a simple vs code extension to optimaze images using commands and cloud hosting. Powered by Cloudinary.
+<p align="center" > Redim is a simple vs code extension to optimaze images using commands and cloud hosting. 
+
+<p align="center" > <img src="https://img.shields.io/badge/powered%20by-Cloudinary-blue" >
 
 ## Features
 It's very simple and easy to use.
