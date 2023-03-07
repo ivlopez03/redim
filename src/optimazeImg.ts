@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import {createCloudinary } from './cloudinaryOpt'; 
-import * as fs from 'fs';
-var uniqid = require('uniqid');
+import {existsSync} from 'fs'
+
+const  uniqid = require('uniqid');
 
 
 export async function optimazeImg(quality: number){
@@ -19,7 +20,7 @@ export async function optimazeImg(quality: number){
         if (filePATH === undefined){
             return vscode.window.showErrorMessage(' Event was cancelled. Try again :)')
         }
-        if (!fs.existsSync(`${filePATH}`)) {
+        if (!existsSync(`${filePATH}`)) {
             return vscode.window.showErrorMessage('File does not exist or invalid path.')}
         return validation = true
     }

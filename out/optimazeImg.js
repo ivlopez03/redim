@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.optimazeImg = void 0;
 const vscode = require("vscode");
 const cloudinaryOpt_1 = require("./cloudinaryOpt");
-const fs = require("fs");
-var uniqid = require('uniqid');
+const fs_1 = require("fs");
+const uniqid = require('uniqid');
 async function optimazeImg(quality) {
     async function openInputbox() {
         let PATH = await vscode.window.showInputBox({
@@ -19,7 +19,7 @@ async function optimazeImg(quality) {
         if (filePATH === undefined) {
             return vscode.window.showErrorMessage(' Event was cancelled. Try again :)');
         }
-        if (!fs.existsSync(`${filePATH}`)) {
+        if (!(0, fs_1.existsSync)(`${filePATH}`)) {
             return vscode.window.showErrorMessage('File does not exist or invalid path.');
         }
         return validation = true;
