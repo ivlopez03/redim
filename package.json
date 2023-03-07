@@ -1,11 +1,10 @@
 {
   "name": "redim",
   "displayName": "Redim",
-  "description": "Optimaze images",
+  "description": "Optimize images using the vs code command line. Modify the quality and reduce the size of your images.",
   "publisher": "redim",
   "version": "0.0.1",
   "pricing": "Free",
-  "icon": "logoredim.png",
   "engines": {
     "vscode": "^1.76.0"
   },
