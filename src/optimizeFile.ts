@@ -5,7 +5,7 @@ import {existsSync} from 'fs'
 const  uniqid = require('uniqid');
 
 
-export async function optimazeImg(quality: number){
+export async function optimizeImg(quality: number){
 
     async function openInputbox(){
         let PATH = await vscode.window.showInputBox({
@@ -30,4 +30,3 @@ export async function optimazeImg(quality: number){
     }
 
 }
-
