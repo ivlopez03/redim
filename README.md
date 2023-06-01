@@ -1,5 +1,5 @@
 # redim README
-<p align="center"><img width="115" alt="logoredim" src="Rlogo.png"> 
+<p align="center"><img width="115" alt="logoredim" src="https://github.com/ivlopez03/redim/assets/111618970/5a3b85fa-8688-4a38-becc-f74922f7b2ef"> 
 
 <p align="center" > Redim is a cool vs code extension to optimize images using commands.
 
@@ -24,7 +24,7 @@ Go to https://marketplace.visualstudio.com/items?itemName=Redimvs.redim or insta
 It's very simple and easy to use.
 
 1. Copy the entire path of the image from your folder.
-<p align="center" ><img src="![image](https://github.com/ivlopez03/redim/assets/111618970/330188ac-a0e8-4dac-877a-b2c976dde5d7)
+<p align="center" ><img src="https://github.com/ivlopez03/redim/assets/111618970/330188ac-a0e8-4dac-877a-b2c976dde5d7
 " >
 
 2. Go to command palette and type 'redim link' or 'redim download' and
