@@ -24,7 +24,7 @@ Go to https://marketplace.visualstudio.com/items?itemName=Redimvs.redim or insta
 It's very simple and easy to use.
 
 1. Copy the entire path of the image from your folder.
-<p align="center" ><img width="300px" src="https://github.com/ivlopez03/redim/assets/111618970/330188ac-a0e8-4dac-877a-b2c976dde5d7" >
+<p align="center" ><img width="500px" src="https://github.com/ivlopez03/redim/assets/111618970/330188ac-a0e8-4dac-877a-b2c976dde5d7" >
 
 2. Go to command palette and type 'redim link' or 'redim download' and
 the quality value you want to try.
