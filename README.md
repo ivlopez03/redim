@@ -28,11 +28,14 @@ It's very simple and easy to use.
 
 2. Go to command palette and type 'redim link' or 'redim download' and
 the quality value you want to try.
+<p align="center" ><img width="500px" src="https://github.com/ivlopez03/redim/assets/111618970/0a610694-bacc-4bfa-a231-ea0d1873069e" >
 
 3. Paste the path 
+<p align="center" ><img width="500px" src="https://github.com/ivlopez03/redim/assets/111618970/5141cc0f-72e0-4bba-9c93-0895c55b8ca8" >
 
 4. Done. You will see an info box with the link to your file hosted in the cloud or a notification 
 that your file has been downloaded to your folder as '[filename]-optimized.webp'
+<p align="center" ><img width="500px" src="![image](https://github.com/ivlopez03/redim/assets/111618970/9d4c26af-1c0c-4b11-8c7f-d1a5f18f512d" >
 
 
 
