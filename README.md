@@ -35,7 +35,7 @@ the quality value you want to try.
 
 4. Done. You will see an info box with the link to your file hosted in the cloud or a notification 
 that your file has been downloaded to your folder as '[filename]-optimized.webp'
-<p align="center" ><img width="500px" src="![image](https://github.com/ivlopez03/redim/assets/111618970/9d4c26af-1c0c-4b11-8c7f-d1a5f18f512d" >
+<p align="center" ><img width="500px" src="https://github.com/ivlopez03/redim/assets/111618970/9d4c26af-1c0c-4b11-8c7f-d1a5f18f512d" >
 
 
 
