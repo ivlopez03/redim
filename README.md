@@ -36,27 +36,21 @@ the quality value you want to try.
 4. Done. You will see an info box with the link to your file hosted in the cloud or a notification 
 that your file has been downloaded to your folder as '[filename]-optimized.webp'
 <p align="center" ><img width="500px" src="https://github.com/ivlopez03/redim/assets/111618970/d4a6d46a-fc4b-4995-8ece-00c028d59005">
-" >
-
-
-
+    
 **Tip: Using redim quality : 90-80 reduces the size of your image without losing quality.**
 
+The size of the original image is 7.36MB and the optimized image with quality 80 has a size of 849.08KB, saving 6.5MB. At the same time it is downloaded in webp format and helping to optimize your app.
+Original image:
+<img width="543" alt="img01" src="https://github.com/ivlopez03/redim/assets/111618970/a3dc15f0-7f75-48ba-896a-7256e4349b3a">
+
+    
 You can save the link and use it inside your html tags instead of uploading the image from your local, and the image is hosted on cloudinary.
 
 
 
     
     
-    
-    
-    
-    
-    
-    
-    
-<p align="center" ><img src="https://user-images.githubusercontent.com/111618970/223301110-3362515c-a06d-43c8-8795-6b6baf039cfe.gif" >
-
+ 
 
 
 
