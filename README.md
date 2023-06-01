@@ -48,7 +48,7 @@ Original image:7.36MB and Optimized image using redim : 849.08KB <br>
     
 You can save the link and use it inside your html tags instead of uploading the image from your local, and the image is hosted on cloudinary.
 <p align="center" >
-![video](https://github.com/ivlopez03/redim/assets/111618970/a353046c-6138-4a6b-851e-c9611cda5f74)
+<img src="https://github.com/ivlopez03/redim/assets/111618970/a353046c-6138-4a6b-851e-c9611cda5f74">
 </p>
 
     
