@@ -1,8 +1,9 @@
 {
   "name": "redim",
   "displayName": "redim",
-  "description": "Optimizing image files quickly n easily ",
-  "version": "0.0.1",
+  "description": "Optimizing image files quickly n easily using the command line. ",
+  "version": "2.0.1",
+  "pricing": "Free",
   "engines": {
     "vscode": "^1.89.0"
   },
@@ -14,8 +15,40 @@
   "contributes": {
     "commands": [
       {
-        "command": "redim.helloWorld",
-        "title": "Hello World"
+        "command": "redim.redimOptimize90",
+        "title": "redim Optimize: 90%"
+      },
+      {
+        "command": "redim.redimOptimize80",
+        "title": "redim Optimize: 80%"
+      },
+      {
+        "command": "redim.redimOptimize70",
+        "title": "redim Optimize: 70%"
+      },
+      {
+        "command": "redim.redimOptimize60",
+        "title": "redim Optimize: 60%"
+      },
+      {
+        "command": "redim.redimOptimize50",
+        "title": "redim Optimize: 50%"
+      },
+      {
+        "command": "redim.redimOptimize40",
+        "title": "redim Optimize: 40%"
+      },
+      {
+        "command": "redim.redimOptimize30",
+        "title": "redim Optimize: 30%"
+      },
+      {
+        "command": "redim.redimOptimize20",
+        "title": "redim Optimize: 20%"
+      },
+      {
+        "command": "samples.quickInput",
+        "title": "Quick Input Samples"
       }
     ]
   },
@@ -28,14 +61,19 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.89.0",
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",
+    "@types/vscode": "^1.89.0",
     "@typescript-eslint/eslint-plugin": "^7.7.1",
     "@typescript-eslint/parser": "^7.7.1",
-    "eslint": "^8.57.0",
-    "typescript": "^5.4.5",
     "@vscode/test-cli": "^0.0.9",
-    "@vscode/test-electron": "^2.3.9"
+    "@vscode/test-electron": "^2.3.9",
+    "axios": "^1.7.0",
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "cloudinary": "^2.2.0",
+    "request": "^2.88.2"
   }
 }
