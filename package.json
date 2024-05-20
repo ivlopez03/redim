@@ -15,40 +15,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "redim.redimOptimize90",
-        "title": "redim Optimize: 90%"
-      },
-      {
-        "command": "redim.redimOptimize80",
-        "title": "redim Optimize: 80%"
-      },
-      {
-        "command": "redim.redimOptimize70",
-        "title": "redim Optimize: 70%"
-      },
-      {
-        "command": "redim.redimOptimize60",
-        "title": "redim Optimize: 60%"
-      },
-      {
-        "command": "redim.redimOptimize50",
-        "title": "redim Optimize: 50%"
-      },
-      {
-        "command": "redim.redimOptimize40",
-        "title": "redim Optimize: 40%"
-      },
-      {
-        "command": "redim.redimOptimize30",
-        "title": "redim Optimize: 30%"
-      },
-      {
-        "command": "redim.redimOptimize20",
-        "title": "redim Optimize: 20%"
-      },
-      {
-        "command": "samples.quickInput",
-        "title": "Quick Input Samples"
+        "command": "redim.redim",
+        "title": "redim - Optimize Images"
       }
     ]
   },

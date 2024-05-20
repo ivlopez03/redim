@@ -1,5 +1,5 @@
 import { QuickPickItem, window, Disposable, CancellationToken, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, Uri } from 'vscode';
-import { getAllFiles } from './readWspaceFiles';
+import { getWorkspace } from './readWspaceFiles';
 import * as vscode from 'vscode';
 
 
@@ -8,26 +8,26 @@ import * as vscode from 'vscode';
  * 
  * This first part uses the helper class `MultiStepInput` that wraps the API for the multi-step case.
  */
-export async function multiStepInput(context: ExtensionContext) {
+export async function optimizedSelectedFile(context: ExtensionContext) {
 
 
 	class MyButton implements QuickInputButton {
 		constructor(public iconPath: { light: Uri; dark: Uri; }, public tooltip: string) { }
 	}
 
-	const createResourceGroupButton = new MyButton({
+	const createAddPathButton = new MyButton({
 		dark: Uri.file(context.asAbsolutePath('resources/dark/add.svg')),
 		light: Uri.file(context.asAbsolutePath('resources/light/add.svg')),
-	}, 'Create Resource Group');
+	}, 'Add a path file');
 
-    const arrayOfAllFiles = await getAllFiles()
+    const arrayOfAllFiles = await getWorkspace();
 
    
     //try to put the array of the files here.
-	const resourceGroups: QuickPickItem[] = arrayOfAllFiles
+	const files: QuickPickItem[] = arrayOfAllFiles
 		.map((label) => ({ label }));
 
-
+	const quality: QuickPickItem[] = ['90', '80', '70', '60', '50', '40', '30', '20', '10'].map(label => ({ label }));	
 	interface State {
 		title: string;
 		step: number;
@@ -43,63 +43,64 @@ export async function multiStepInput(context: ExtensionContext) {
 		return state as State;
 	}
 
-	const title = 'Create Application Service';
+	const title = 'Optimize File';
 
 	async function pickResourceGroup(input: MultiStepInput, state: Partial<State>) {
 		const pick = await input.showQuickPick({
 			title,
 			step: 1,
 			totalSteps: 3,
-			placeholder: 'Pick a resource group',
-			items: resourceGroups,
+			placeholder: 'Select a file to optimize',
+			items: files,
 			activeItem: typeof state.resourceGroup !== 'string' ? state.resourceGroup : undefined,
-			buttons: [createResourceGroupButton],
+			buttons: [createAddPathButton],
 			shouldResume: shouldResume
 		});
 		if (pick instanceof MyButton) {
-			return (input: MultiStepInput) => inputResourceGroupName(input, state);
+			return (input: MultiStepInput) => inputFilePath(input, state);
 		}
 		state.resourceGroup = pick;
-		return (input: MultiStepInput) => inputName(input, state);
+		return (input: MultiStepInput) => inputQuality(input, state);
 	}
 
-	async function inputResourceGroupName(input: MultiStepInput, state: Partial<State>) {
+	async function inputFilePath(input: MultiStepInput, state: Partial<State>) {
 		state.resourceGroup = await input.showInputBox({
 			title,
 			step: 2,
 			totalSteps: 4,
 			value: typeof state.resourceGroup === 'string' ? state.resourceGroup : '',
-			prompt: 'Choose a unique name for the resource group',
-			validate: validateNameIsUnique,
+			prompt: 'Paste the path of the file to optimize',
+			validate: validateFileExist,
 			shouldResume: shouldResume
 		});
-		return (input: MultiStepInput) => inputName(input, state);
+		return (input: MultiStepInput) => inputQuality(input, state);
 	}
 
-	async function inputName(input: MultiStepInput, state: Partial<State>) {
+	async function inputQuality(input: MultiStepInput, state: Partial<State>) {
 		const additionalSteps = typeof state.resourceGroup === 'string' ? 1 : 0;
 		// TODO: Remember current value when navigating back.
-		state.name = await input.showInputBox({
+		const pick = await input.showQuickPick({
 			title,
 			step: 2 + additionalSteps,
 			totalSteps: 3 + additionalSteps,
 			value: state.name || '',
-			prompt: 'Choose a unique name for the Application Service',
-			validate: validateNameIsUnique,
+			placeholder: 'Choose a quality % for the image optimization',
+			items: quality,
+			activeItem: typeof state.resourceGroup !== 'string' ? state.resourceGroup : undefined,
 			shouldResume: shouldResume
 		});
-		return (input: MultiStepInput) => pickRuntime(input, state);
+		return (input: MultiStepInput) => pickFormat(input, state);
 	}
 
-	async function pickRuntime(input: MultiStepInput, state: Partial<State>) {
+	async function pickFormat(input: MultiStepInput, state: Partial<State>) {
 		const additionalSteps = typeof state.resourceGroup === 'string' ? 1 : 0;
-		const runtimes = await getAvailableRuntimes(state.resourceGroup!, undefined /* TODO: token */);
+		const runtimes = await getAvailableFormats(state.resourceGroup!, undefined /* TODO: token */);
 		// TODO: Remember currently active item when navigating back.
 		state.runtime = await input.showQuickPick({
 			title,
 			step: 3 + additionalSteps,
 			totalSteps: 3 + additionalSteps,
-			placeholder: 'Pick a runtime',
+			placeholder: 'Select your preferred file format for downloading the image',
 			items: runtimes,
 			activeItem: state.runtime,
 			shouldResume: shouldResume
@@ -113,21 +114,21 @@ export async function multiStepInput(context: ExtensionContext) {
 		});
 	}
 
-	async function validateNameIsUnique(name: string) {
+	async function validateFileExist(name: string) {
 		// ...validate...
 		await new Promise(resolve => setTimeout(resolve, 1000));
 		return name === 'vscode' ? 'Name not unique' : undefined;
 	}
 
-	async function getAvailableRuntimes(resourceGroup: QuickPickItem | string, token?: CancellationToken): Promise<QuickPickItem[]> {
+	async function getAvailableFormats(resourceGroup: QuickPickItem | string, token?: CancellationToken): Promise<QuickPickItem[]> {
 		// ...retrieve...
 		await new Promise(resolve => setTimeout(resolve, 1000));
-		return ['Node 8.9', 'Node 6.11', 'Node 4.5']
+		return ['Webp', 'AVIF']
 			.map(label => ({ label }));
 	}
 
 	const state = await collectInputs();
-	window.showInformationMessage(`Creating Application Service '${state.name}'`);
+	window.showInformationMessage(`Downloading optimized image '${state.name}'`);
 }
 
 

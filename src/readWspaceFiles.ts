@@ -1,85 +1,47 @@
 
 import * as vscode from 'vscode';
+import * as fs from 'fs';
+import * as path from 'path';
 
-
-const listOfFiles: string[] = []
-
-
-async function getPathUri(ws: any){
-    const uri_format = vscode.Uri.file(ws[0].uri.path.slice(1))
-    return uri_format 
-}
-
-function filter_workspace(workspace_array: any[],ws_path: string,list_filtered:string[]){
-        
-    if (workspace_array != undefined){ 
-        //filter array and getting array with the files.
-        workspace_array.forEach(async element => {
-            
-            if(element[1] == 1){
-                list_filtered.push(element[0])
-                console.log('push file type 1')
-            }
-            else if(element[1] == 2){
-                
-                const folder_path = ws_path + '/' + element[0]
-                const get_list = await vscode.workspace.fs.readDirectory(await get_uriFormat(folder_path))
-                get_list.forEach(async element =>{
-                    if(element[1] == 1){
-                        list_filtered.push(element[0])
-                        console.log('push file type 1.2')
-                    }
-                    else if(element[1] == 2){
-                        const fpath = folder_path + '/' + element[0]
-                        const getlist = await vscode.workspace.fs.readDirectory(await get_uriFormat(fpath))
-                        console.log('push file type 2.2')
-                        filter_workspace(getlist,ws_path,list_filtered)
-
-                    }
-                    
-                })
-            }
-
-            }
-          
-        );
-        console.log(list_filtered)
-
-        return list_filtered
-
-        console.log(list_filtered)
-        console.log(list_filtered.length)
-        
-    }
-    
-}
-
-async function get_uriFormat(path: string){
-    const new_format = vscode.Uri.file(path)
-    return new_format
-}
 
 // get workspace and filter path and transform to Uri
-export async function getWorkspace(){
-    const ws_folder = vscode.workspace.workspaceFolders 
+export function getWorkspace(): string[] {
+    const ws_folder = vscode.workspace.workspaceFolders;
 
-    if (ws_folder != undefined){
-        const ws_path =ws_folder[0].uri.path.slice(1)
-        const workspace_array = await vscode.workspace.fs.readDirectory(await getPathUri(ws_folder))
-        let result = filter_workspace(workspace_array,ws_path,listOfFiles)
-        console.log('result:',result)
-        return result
+    if (ws_folder && ws_folder.length > 0) {
+        const ws_path = ws_folder[0].uri.fsPath; // Use fsPath instead of path
+        return getAllFiles(ws_path);
+    }
 
-    } 
+    return [];
 }
 
-//export async function getAllFiles(){ 
+function getAllFiles(dirPath: string, arrayOfFiles: string[] = [],arrayOfPathfiles: string[] = []): string[] {
+    const files = fs.readdirSync(dirPath);
 
-//    const result = await getWorkspace()
-//    console.log('this is the result:', result)
-//    return listOfFiles
+    files.forEach((file) => {
+        const filePath = path.join(dirPath, file);
+        if (fs.statSync(filePath).isDirectory()) {
+            getAllFiles(filePath, arrayOfFiles);
+        } else {
+            arrayOfPathfiles.push(filePath);
+            arrayOfFiles.push(path.basename(filePath));
+        }
+    });
 
-//}
+    return filterFiles(arrayOfFiles);;
+}
+
+function filterFiles(arrayOfFiles: string[]): string[] {
+    const allowedExtensions = ['.png', '.jpg', '.ico', '.svg', '.webp'];
+    return arrayOfFiles.filter(file => {
+        const extension = path.extname(file);
+        return allowedExtensions.includes(extension);
+    });
+}
+
+
+
 
 
 

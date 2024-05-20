@@ -10,7 +10,7 @@ import { workspace } from 'vscode';
  * It shows how the list of items can be dynamically updated based on
  * the user's input in the filter field.
  */
-export async function quickOpen() {
+export async function optimizeAllFiles() {
 	const uri = await pickFile();
 	if (uri) {
 		const document = await workspace.openTextDocument(uri);
