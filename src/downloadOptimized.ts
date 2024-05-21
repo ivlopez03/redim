@@ -9,11 +9,11 @@ import axios from 'axios';
 
 
 const getFileName = async function (filePATH : any) {
-    const fname = win32.basename(filePATH)
-    const last_pos = fname.indexOf('.')
-    const origin_name = fname.slice(0,last_pos)
-    return origin_name
-}
+    const fname = win32.basename(filePATH);
+    const last_pos = fname.indexOf('.');
+    const origin_name = fname.slice(0,last_pos);
+    return origin_name;
+};
 
 
 export async function downloadOptimizedFile(quality: number) {
@@ -35,7 +35,7 @@ export async function downloadOptimizedFile(quality: number) {
             const filename = getNewPath.concat(`/${await getFileName(filePATH)}-optimized.webp`)
             
             vscode.window.showInformationMessage(' Downloading Image.')
-            const imgUrl = await createImageCloudinary(filePATH,quality)
+            const imgUrl = await createImageCloudinary(filePATH,quality,fetch_format);
             
             download(imgUrl)
 
@@ -45,14 +45,14 @@ export async function downloadOptimizedFile(quality: number) {
                     url: imgUrl,
                     responseType: 'stream'
                 }).then(function(response){
-                    response.data.pipe(createWriteStream(filename))
-                }).finally(()=>{vscode.window.showInformationMessage('✅Image Downloaded Successfully')})
+                    response.data.pipe(createWriteStream(filename));
+                }).finally(()=>{vscode.window.showInformationMessage('✅Image Downloaded Successfully')});
                   
             }
         }
 
     } catch (err) {
-        console.log(err)
+        console.log(err);
 
     }
 }

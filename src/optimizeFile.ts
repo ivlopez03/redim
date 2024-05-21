@@ -6,6 +6,7 @@ import { openInputbox } from './getFilePath';
 
 
 
+
 export async function optimizeImg(quality: number){
 
     const filePATH = await openInputbox();
@@ -21,7 +22,7 @@ export async function optimizeImg(quality: number){
         return validation = true
     }
     if (await validationImgExists(filePATH,validation)){
-        const imgUrl = createImageCloudinary(filePATH,quality)
+        const imgUrl = createImageCloudinary(filePATH,quality,format)
         vscode.window.showInformationMessage(await imgUrl)
     }
 

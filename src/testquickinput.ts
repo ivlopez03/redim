@@ -1,6 +1,7 @@
 import { QuickPickItem, window, Disposable, CancellationToken, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, Uri } from 'vscode';
 import { getWorkspace } from './readWspaceFiles';
 import * as vscode from 'vscode';
+import { stat } from 'fs';
 
 
 /**
@@ -27,48 +28,49 @@ export async function optimizedSelectedFile(context: ExtensionContext) {
 	const files: QuickPickItem[] = arrayOfAllFiles
 		.map((label) => ({ label }));
 
-	const quality: QuickPickItem[] = ['90', '80', '70', '60', '50', '40', '30', '20', '10'].map(label => ({ label }));	
+	const qualityList: QuickPickItem[] = ['90', '80', '70', '60', '50', '40', '30', '20', '10'].map(label => ({ label }));	
 	interface State {
 		title: string;
 		step: number;
 		totalSteps: number;
-		resourceGroup: QuickPickItem | string;
+		filename: QuickPickItem | string;
+		quality: QuickPickItem;
 		name: string;
-		runtime: QuickPickItem;
+		fileExtension: QuickPickItem;
 	}
 
 	async function collectInputs() {
 		const state = {} as Partial<State>;
-		await MultiStepInput.run(input => pickResourceGroup(input, state));
+		await MultiStepInput.run(input => pickFile(input, state));
 		return state as State;
 	}
 
 	const title = 'Optimize File';
 
-	async function pickResourceGroup(input: MultiStepInput, state: Partial<State>) {
+	async function pickFile(input: MultiStepInput, state: Partial<State>) {
 		const pick = await input.showQuickPick({
 			title,
 			step: 1,
 			totalSteps: 3,
 			placeholder: 'Select a file to optimize',
 			items: files,
-			activeItem: typeof state.resourceGroup !== 'string' ? state.resourceGroup : undefined,
+			activeItem: typeof state.filename !== 'string' ? state.filename : undefined,
 			buttons: [createAddPathButton],
 			shouldResume: shouldResume
 		});
 		if (pick instanceof MyButton) {
 			return (input: MultiStepInput) => inputFilePath(input, state);
 		}
-		state.resourceGroup = pick;
+		state.filename = pick;
 		return (input: MultiStepInput) => inputQuality(input, state);
 	}
 
 	async function inputFilePath(input: MultiStepInput, state: Partial<State>) {
-		state.resourceGroup = await input.showInputBox({
+		state.filename = await input.showInputBox({
 			title,
 			step: 2,
 			totalSteps: 4,
-			value: typeof state.resourceGroup === 'string' ? state.resourceGroup : '',
+			value: typeof state.filename === 'string' ? state.filename : '',
 			prompt: 'Paste the path of the file to optimize',
 			validate: validateFileExist,
 			shouldResume: shouldResume
@@ -77,34 +79,38 @@ export async function optimizedSelectedFile(context: ExtensionContext) {
 	}
 
 	async function inputQuality(input: MultiStepInput, state: Partial<State>) {
-		const additionalSteps = typeof state.resourceGroup === 'string' ? 1 : 0;
+		const additionalSteps = typeof state.filename === 'string' ? 1 : 0;
 		// TODO: Remember current value when navigating back.
-		const pick = await input.showQuickPick({
+		const quality = await input.showQuickPick({
 			title,
 			step: 2 + additionalSteps,
 			totalSteps: 3 + additionalSteps,
 			value: state.name || '',
 			placeholder: 'Choose a quality % for the image optimization',
-			items: quality,
-			activeItem: typeof state.resourceGroup !== 'string' ? state.resourceGroup : undefined,
+			items: qualityList,
+			activeItem: typeof state.quality !== 'string' ? state.quality : undefined,
 			shouldResume: shouldResume
 		});
+		state.quality = quality;
+		console.log(state.quality);
 		return (input: MultiStepInput) => pickFormat(input, state);
 	}
 
 	async function pickFormat(input: MultiStepInput, state: Partial<State>) {
-		const additionalSteps = typeof state.resourceGroup === 'string' ? 1 : 0;
-		const runtimes = await getAvailableFormats(state.resourceGroup!, undefined /* TODO: token */);
+		const additionalSteps = typeof state.filename === 'string' ? 1 : 0;
+		const formats = await getAvailableFormats(state.filename!, undefined /* TODO: token */);
 		// TODO: Remember currently active item when navigating back.
-		state.runtime = await input.showQuickPick({
+		state.fileExtension = await input.showQuickPick({
 			title,
 			step: 3 + additionalSteps,
 			totalSteps: 3 + additionalSteps,
 			placeholder: 'Select your preferred file format for downloading the image',
-			items: runtimes,
-			activeItem: state.runtime,
+			items: formats,
+			activeItem: state.quality,
 			shouldResume: shouldResume
 		});
+		console.log(state.fileExtension.label);
+		console.log(state);
 	}
 
 	function shouldResume() {
