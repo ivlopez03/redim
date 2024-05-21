@@ -92,7 +92,6 @@ export async function optimizedSelectedFile(context: ExtensionContext) {
 			shouldResume: shouldResume
 		});
 		state.quality = quality;
-		console.log(state.quality);
 		return (input: MultiStepInput) => pickFormat(input, state);
 	}
 
@@ -109,9 +108,7 @@ export async function optimizedSelectedFile(context: ExtensionContext) {
 			activeItem: state.quality,
 			shouldResume: shouldResume
 		});
-		console.log(state.fileExtension.label);
-		console.log(state);
-	}
+	};
 
 	function shouldResume() {
 		// Could show a notification with the option to resume.
@@ -134,6 +131,7 @@ export async function optimizedSelectedFile(context: ExtensionContext) {
 	}
 
 	const state = await collectInputs();
+	console.log(state);
 	window.showInformationMessage(`Downloading optimized image '${state.name}'`);
 }
 
@@ -320,3 +318,4 @@ class MultiStepInput {
 		}
 	}
 }
+

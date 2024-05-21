@@ -29,7 +29,7 @@ function getAllFiles(dirPath: string, arrayOfFiles: string[] = [],arrayOfPathfil
         }
     });
 
-    return filterFiles(arrayOfFiles);;
+    return filterFiles(arrayOfFiles);
 }
 
 function filterFiles(arrayOfFiles: string[]): string[] {
