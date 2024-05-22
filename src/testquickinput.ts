@@ -1,17 +1,20 @@
 import { QuickPickItem, window, Disposable, CancellationToken, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, Uri } from 'vscode';
 import { getWorkspace } from './readWspaceFiles';
 import * as vscode from 'vscode';
-import { stat } from 'fs';
 
 
 /**
  * A multi-step input using window.createQuickPick() and window.createInputBox().
- * 
  * This first part uses the helper class `MultiStepInput` that wraps the API for the multi-step case.
  */
+
 export async function optimizedSelectedFile(context: ExtensionContext) {
 
-
+	/**
+	 * A class MyButton that implements QuickInputButton
+	 * This class is used to create a constructor of the button that will be used to open a input to add a path file
+	 * In the properties of the constructor, add the path of the icon that will be used for the button   
+	 */
 	class MyButton implements QuickInputButton {
 		constructor(public iconPath: { light: Uri; dark: Uri; }, public tooltip: string) { }
 	}
@@ -21,14 +24,25 @@ export async function optimizedSelectedFile(context: ExtensionContext) {
 		light: Uri.file(context.asAbsolutePath('resources/light/add.svg')),
 	}, 'Add a path file');
 
-    const arrayOfAllFiles = await getWorkspace();
 
-   
-    //try to put the array of the files here.
+	/**
+	 * Defining the QuickPickItem array for the files, quality and file extensions available for the user
+	 * For the files array, it will be filled with the files in the workspace by calling the function getWorkspace() 
+	 * For the quality array, it will be filled with the quality options that the user can choose
+	 * For the fileExtensions array, it will be filled with the file extensions that the user can choose
+	 */
+
+    const arrayOfAllFiles = await getWorkspace();
 	const files: QuickPickItem[] = arrayOfAllFiles
 		.map((label) => ({ label }));
 
-	const qualityList: QuickPickItem[] = ['90', '80', '70', '60', '50', '40', '30', '20', '10'].map(label => ({ label }));	
+	const qualityList: QuickPickItem[] = ['90', '80', '70', '60', '50', '40', '30', '20', '10']
+		.map(label => ({ label }));
+
+	const fileExtensions: QuickPickItem[] = ['Webp', 'AVIF']
+		.map(label => ({ label }));
+
+	//Defining the State interface for the input steps
 	interface State {
 		title: string;
 		step: number;
@@ -39,6 +53,7 @@ export async function optimizedSelectedFile(context: ExtensionContext) {
 		fileExtension: QuickPickItem;
 	}
 
+	
 	async function collectInputs() {
 		const state = {} as Partial<State>;
 		await MultiStepInput.run(input => pickFile(input, state));
@@ -46,6 +61,13 @@ export async function optimizedSelectedFile(context: ExtensionContext) {
 	}
 
 	const title = 'Optimize File';
+
+	/**
+	 * The pickFile function is the first step of the input.
+	 * @param input  - param to call the showQuickPick method to create a QuickPick window 
+	 * @param state  - param to define the state properties
+	 * @returns  inputFilePath function if the user clicks on the button to add a path file or inputQuality function if the user selects a file
+	 */
 
 	async function pickFile(input: MultiStepInput, state: Partial<State>) {
 		const pick = await input.showQuickPick({
@@ -65,6 +87,14 @@ export async function optimizedSelectedFile(context: ExtensionContext) {
 		return (input: MultiStepInput) => inputQuality(input, state);
 	}
 
+
+	/**
+	 * The inputFilePath function is the second step of the input.
+	 * @param input  - param to call the showInputBox method to create a InputBox window 
+	 * @param state  - param to define the state properties
+	 * @returns  inputQuality function
+	 */
+
 	async function inputFilePath(input: MultiStepInput, state: Partial<State>) {
 		state.filename = await input.showInputBox({
 			title,
@@ -77,6 +107,13 @@ export async function optimizedSelectedFile(context: ExtensionContext) {
 		});
 		return (input: MultiStepInput) => inputQuality(input, state);
 	}
+
+	/**
+	 * The inputQuality function is the third step of the input.
+	 * @param input  - param to call the showQuickPick method to create a QuickPick window 
+	 * @param state  - param to define the state properties
+	 * @returns  pickFormat function
+	 */
 
 	async function inputQuality(input: MultiStepInput, state: Partial<State>) {
 		const additionalSteps = typeof state.filename === 'string' ? 1 : 0;
@@ -95,45 +132,60 @@ export async function optimizedSelectedFile(context: ExtensionContext) {
 		return (input: MultiStepInput) => pickFormat(input, state);
 	}
 
+	/**
+	 * The pickFormat function is the fourth step of the input.
+	 * @param input  - param to call the showQuickPick method to create a QuickPick window 
+	 * @param state  - param to define the state properties
+	 * @returns  void
+	 */
+
 	async function pickFormat(input: MultiStepInput, state: Partial<State>) {
 		const additionalSteps = typeof state.filename === 'string' ? 1 : 0;
-		const formats = await getAvailableFormats(state.filename!, undefined /* TODO: token */);
 		// TODO: Remember currently active item when navigating back.
 		state.fileExtension = await input.showQuickPick({
 			title,
 			step: 3 + additionalSteps,
 			totalSteps: 3 + additionalSteps,
 			placeholder: 'Select your preferred file format for downloading the image',
-			items: formats,
+			items: fileExtensions,
 			activeItem: state.quality,
 			shouldResume: shouldResume
 		});
 	};
 
+
+
+	//---------------------------------------------- in progress
 	function shouldResume() {
 		// Could show a notification with the option to resume.
 		return new Promise<boolean>((resolve, reject) => {
 			// noop
 		});
 	}
+	//----------------------------------------------
 
-	async function validateFileExist(name: string) {
+
+
+	/**
+	 * The validateFileExist function is used to validate if the file already exists.
+	 * @param file  - file param is the file path that the user will input
+	 * @returns  'file does not exist' if the file is  undefined 
+	 */
+
+	async function validateFileExist(file: string) {
 		// ...validate...
 		await new Promise(resolve => setTimeout(resolve, 1000));
-		return name === 'vscode' ? 'Name not unique' : undefined;
+		return file === 'vscode' ? 'Name not unique' : undefined;
 	}
 
-	async function getAvailableFormats(resourceGroup: QuickPickItem | string, token?: CancellationToken): Promise<QuickPickItem[]> {
-		// ...retrieve...
-		await new Promise(resolve => setTimeout(resolve, 1000));
-		return ['Webp', 'AVIF']
-			.map(label => ({ label }));
-	}
+
 
 	const state = await collectInputs();
+	const filename = Object.values(state.filename)[0];
 	console.log(state);
-	window.showInformationMessage(`Downloading optimized image '${state.name}'`);
+	window.showInformationMessage(`Downloading optimized image '${filename}'`);
 }
+
 
 
 // -------------------------------------------------------
