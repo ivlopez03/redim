@@ -184,6 +184,7 @@ export async function optimizedSelectedFile(context: ExtensionContext) {
 	const filename = Object.values(state.filename)[0];
 	console.log(state);
 	window.showInformationMessage(`Downloading optimized image '${filename}'`);
+	
 }
 
 
