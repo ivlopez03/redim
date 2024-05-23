@@ -43,7 +43,7 @@ function getAllFiles(dir_path: string, array_files: string[] = [],array_path_fil
         if (fs.statSync(file_path).isDirectory()) {
             getAllFiles(file_path, array_files);
         } else {
-            array_files.push(path.basename(file_path)); 
+            array_files.push(file_path); 
             //array_files.push(file_path); 
         }
     });
@@ -59,7 +59,7 @@ function getAllFiles(dir_path: string, array_files: string[] = [],array_path_fil
  */
 
 function filterFileExtension(files_list: string[]): string[] {
-    const allowedExtensions = ['.png', '.jpg', '.ico', '.svg', '.webp'];
+    const allowedExtensions = ['.png', '.jpg', '.ico', '.svg', '.webp','.jpe','.jpeg','.bmp','.tiff','.tif','.psd','.avif'];
     
     return files_list.filter(file => {
         const extension = path.extname(file);
@@ -71,7 +71,7 @@ function filterFileExtension(files_list: string[]): string[] {
 
 const fileObjects: { [key: string]: string }[] = [];
 
-
+/** 
 export function createArrayofPathfiles() {
     const workspace_path = vscode.workspace.workspaceFolders;
 
@@ -90,7 +90,7 @@ export function createArrayofPathfiles() {
     return [];
     
 }
-
+*/
 
 
 

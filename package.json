@@ -16,7 +16,7 @@
     "commands": [
       {
         "command": "redim.redim",
-        "title": "redim - Optimize Images"
+        "title": "redim Optimazer"
       }
     ]
   },
