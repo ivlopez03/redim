@@ -1,6 +1,8 @@
 import { QuickPickItem, window, Disposable, CancellationToken, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, Uri } from 'vscode';
-import { getWorkspace } from './readWspaceFiles';
+import { getWorkspaceFiles,createArrayofPathfiles } from './readWspaceFiles';
 import * as vscode from 'vscode';
+import { downloadFile } from './downloadFile';
+import { downloadOptimizedFile } from './downloadOptimized';
 
 
 /**
@@ -32,7 +34,7 @@ export async function optimizedSelectedFile(context: ExtensionContext) {
 	 * For the fileExtensions array, it will be filled with the file extensions that the user can choose
 	 */
 
-    const arrayOfAllFiles = await getWorkspace();
+    const arrayOfAllFiles = await getWorkspaceFiles();
 	const files: QuickPickItem[] = arrayOfAllFiles
 		.map((label) => ({ label }));
 
@@ -181,9 +183,30 @@ export async function optimizedSelectedFile(context: ExtensionContext) {
 
 
 	const state = await collectInputs();
-	const filename = Object.values(state.filename)[0];
+	//const filename = Object.values(state.filename)[0]; //return: {label: 'filename'}
 	console.log(state);
-	window.showInformationMessage(`Downloading optimized image '${filename}'`);
+
+	const files_list = createArrayofPathfiles();
+
+	function uploadCloudinary(state: State){
+		const file_extension = Object.values(state.fileExtension)[0];
+		const quality = Object.values(state.quality)[0];
+		const filename = Object.values(state.filename)[0];
+		const extracted_file = files_list.filter((file) => file[`${filename}`])[0][`${filename}`];
+
+		if(extracted_file === undefined){
+			return vscode.window.showErrorMessage('File does not exist or invalid path')
+		}else{
+
+			downloadOptimizedFile(quality,file_extension,extracted_file)
+
+		}
+		console.log(extracted_file);
+	};
+
+	uploadCloudinary(state);
+
+	//window.showInformationMessage(`Downloading optimized image '${filename}'`);
 	
 }
 

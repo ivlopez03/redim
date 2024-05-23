@@ -1,5 +1,6 @@
 
 const cloudinary = require('cloudinary');
+import 'dotenv/config';
 
 cloudinary.v2.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -29,12 +30,12 @@ const uploadImage = async (filename: string | undefined) => {
 };
 
 
-export async function createImageCloudinary(filename: string | undefined,setQuality: number,format: string){
+export async function createImageCloudinary(filename: string | undefined,quality: number,file_extension: string){
   const publicId = await uploadImage(filename);
   const imgCloudUrl = cloudinary.url(publicId, 
     {
-      quality: setQuality, 
-     fetch_format: format,
+      quality: quality, 
+      fetch_format: file_extension,
     }
   )  
   return imgCloudUrl;
