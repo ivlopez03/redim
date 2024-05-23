@@ -21,3 +21,4 @@ Stop leaving your development environment and waste time looking for any website
 ## How to use 
 It's very intuitive, open the command palette and type 'redim Optimizer'
 
+
