@@ -1,15 +1,12 @@
 
 const cloudinary = require('cloudinary');
-//mport dotenv from 'dotenv';
-//require('dotenv').config();
-//dotenv.config();
 
-
+require('dotenv').config({ path: '/Users/ivanlopezmontano/Documents/dev/vscode_extension_redim/redimv2/.env' });
 
 cloudinary.v2.config({
-  cloud_name: 'redim23kljmn094jk',
-  api_key: '835163574249945',
-  api_secret: 'DAG6rS2N1ikkjbULQG52_Nz7vCg',
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
   secure: true
 });
 
@@ -40,10 +37,8 @@ export async function createImageCloudinary(filename: string | undefined,quality
       fetch_format: file_extension,
     }
   )  
+  console.log(imgCloudUrl);
   return imgCloudUrl;
 }
 
 
-export async function file_data(public_id: string) {
-  return cloudinary.v2.api.resource(public_id).then((result: any) => console.log(result));
-} 

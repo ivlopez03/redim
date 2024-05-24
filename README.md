@@ -15,6 +15,9 @@ Stop leaving your development environment and waste time looking for any website
 - You can choose the quality percentage from 90% to 10%.
 - You can download the file using the actual format or you can convert it to any of the  current converted supported formats [ AVIF(recommended for better optimization performance) , Webp , JPG , PNG]
 - Option to automatically optimize all images files and download them.
+- Max file size supported is 10 MB. (for now you can optimize files that size is >= 10mb)
+
+
 
 
 
