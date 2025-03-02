@@ -1,7 +1,8 @@
 import { QuickPickItem, window, Disposable, CancellationToken, QuickInputButton, QuickInput, ExtensionContext, QuickInputButtons, Uri } from 'vscode';
-import { getWorkspaceFiles } from './readWspaceFiles';
 import * as vscode from 'vscode';
-import { downloadOptimizedFile } from './downloadOptimized';
+import { optimizeImage } from './utils/optimizeUtil';
+import fs from 'fs';
+import { getImageFiles } from './utils/getImageFilesUtil';
 
 
 /**
@@ -9,7 +10,7 @@ import { downloadOptimizedFile } from './downloadOptimized';
  * This first part uses the helper class `MultiStepInput` that wraps the API for the multi-step case.
  */
 
-export async function optimizedSelectedFile(context: ExtensionContext) {
+export async function optimizeFile(context: ExtensionContext) {
 
 	/**
 	 * A class MyButton that implements QuickInputButton
@@ -34,14 +35,26 @@ export async function optimizedSelectedFile(context: ExtensionContext) {
 	 * For the fileExtensions array, it will be filled with the file extensions that the user can choose
 	 */
 
-    const arrayOfAllFiles = await getWorkspaceFiles();
-	const files: QuickPickItem[] = arrayOfAllFiles
-		.map((label) => ({ label }));
+	const imageFiles = await getImageFiles();
+	if (imageFiles.length === 0) {
+		vscode.window.showErrorMessage('No image files found in the workspace.');
+		return;
+	}
+
+	  // Create QuickPick items from the image files
+	  const quickPickItems = imageFiles.map((file) => ({
+		label: file.filename,
+		description: file.path, // Show the full path as a description
+	}));
+
 
 	const qualityList: QuickPickItem[] = ['90', '80', '70', '60', '50', '40', '30', '20', '10']
 		.map(label => ({ label }));
 
-	const fileExtensions: QuickPickItem[] = ['webp', 'avif' , 'jpg' , 'default']
+
+
+
+	const fileExtensions: QuickPickItem[] = ['avif', 'webp' , 'jpeg']
 		.map(label => ({ label }));
 
 	//Defining the State interface for the input steps
@@ -49,8 +62,8 @@ export async function optimizedSelectedFile(context: ExtensionContext) {
 		title: string;
 		step: number;
 		totalSteps: number;
-		filename: QuickPickItem | string;
-		quality: QuickPickItem;
+		file: QuickPickItem | string;
+		quality: QuickPickItem | string;
 		name: string;
 		fileExtension: QuickPickItem;
 	}
@@ -77,11 +90,11 @@ export async function optimizedSelectedFile(context: ExtensionContext) {
 			step: 1,
 			totalSteps: 3,
 			placeholder: 'Select a file to optimize',
-			items: files,
-			activeItem: typeof state.filename !== 'string' ? state.filename : undefined,
+			items: quickPickItems,
+			activeItem: typeof state.file !== 'string' ? state.file : undefined,
 			shouldResume: shouldResume
 		});
-		state.filename = pick;
+		state.file = pick;
 		return (input: MultiStepInput) => inputQuality(input, state);
 	}
 
@@ -114,17 +127,11 @@ export async function optimizedSelectedFile(context: ExtensionContext) {
 	 */
 
 	async function inputQuality(input: MultiStepInput, state: Partial<State>) {
-		const additionalSteps = typeof state.filename === 'string' ? 1 : 0;
+		const additionalSteps = typeof state.file === 'string' ? 1 : 0;
 		// TODO: Remember current value when navigating back.
-		const quality = await input.showQuickPick({
-			title,
-			step: 2 + additionalSteps,
-			totalSteps: 3 + additionalSteps,
-			value: state.name || '',
-			placeholder: 'Choose a quality % for the image optimization',
-			items: qualityList,
-			activeItem: typeof state.quality !== 'string' ? state.quality : undefined,
-			shouldResume: shouldResume
+		const quality = await vscode.window.showInputBox({
+			prompt: 'Enter the quality (1-100)',
+			value: '80', // Default value
 		});
 		state.quality = quality;
 		return (input: MultiStepInput) => pickFormat(input, state);
@@ -138,7 +145,7 @@ export async function optimizedSelectedFile(context: ExtensionContext) {
 	 */
 
 	async function pickFormat(input: MultiStepInput, state: Partial<State>) {
-		const additionalSteps = typeof state.filename === 'string' ? 1 : 0;
+		const additionalSteps = typeof state.file === 'string' ? 1 : 0;
 		// TODO: Remember currently active item when navigating back.
 		state.fileExtension = await input.showQuickPick({
 			title,
@@ -146,10 +153,21 @@ export async function optimizedSelectedFile(context: ExtensionContext) {
 			totalSteps: 3 + additionalSteps,
 			placeholder: 'Select your preferred file format for downloading the image',
 			items: fileExtensions,
-			activeItem: state.quality,
+			activeItem: typeof state.quality !== 'string' ? state.quality : undefined,
 			shouldResume: shouldResume
 		});
 	};
+
+	const removeInputFile = await vscode.window.showQuickPick(['Keep original file', 'Remove original file'], {
+            placeHolder: 'Do you want to remove the input file after optimization?',
+        });
+
+        if (!removeInputFile) {
+            return; // Exit if no option is selected
+        }
+
+
+
 
 
 
@@ -179,31 +197,64 @@ export async function optimizedSelectedFile(context: ExtensionContext) {
 
 
 	const state = await collectInputs();
-	//const filename = Object.values(state.filename)[0]; //return: {label: 'filename'}
-	console.log(state);
+	
+	//console.log(state);
 
-	//const files_list = createArrayofPathfiles();
-
-	function uploadCloudinary(state: State){
+	async function optimizeImageExtension(state: State){
 
 		const file_extension = Object.values(state.fileExtension)[0];
-		const quality = Object.values(state.quality)[0];
-		const filename = Object.values(state.filename)[0];
-;
+		const quality = Number(Object.values(state.quality)[0]);
+		const inputPath = Object.values(state.file)[1];
 
-		if(filename === undefined){
+
+		const path = inputPath.split('/').slice(0, -1).join('/'); //get the path of the file
+		const get_format = inputPath.split('/').pop() as string ;
+        const name = get_format.split('.').slice(0,-1).join('.');
+        const outputPath = `${path}/${name}.${file_extension}`;
+		//const outputPath = vscode.Uri.file(inputPath.replace(/\.[^/.]+$/,`.${file_extension}`));
+
+		
+
+        // Check if the output path is the same as the input path
+        if (outputPath === inputPath) {
+            return vscode.window.showErrorMessage('Output path cannot be the same as the input path');
+        }
+		
+
+		if(inputPath === undefined){
 			return vscode.window.showErrorMessage('File does not exist or invalid path');
 		}else{
+			 // Show a progress indicator while optimizing the image
+			 vscode.window.withProgress(
+				{
+					location: vscode.ProgressLocation.Notification,
+					title: 'Optimizing image...',
+					cancellable: false,
+				},
+				async () => {
+					await optimizeImage(inputPath,outputPath,quality,file_extension,get_format);
 
-			downloadOptimizedFile(quality,file_extension,filename);
+					if (removeInputFile === 'Remove original file') {
+						fs.unlink(inputPath, (err) => {
+							if (err) {
+								vscode.window.showErrorMessage('Failed to remove file');
+								return;
+							} else{
+								vscode.window.showInformationMessage('Original File removed successfully');
+							}
+						});
+					
+					}
+
+				}
+			);
 
 		}
-		console.log('this is the extracted file:',filename);
+		
 	};
 
-	uploadCloudinary(state);
 
-	//window.showInformationMessage(`Downloading optimized image '${filename}'`);
+	await optimizeImageExtension(state);
 	
 }
 
@@ -227,7 +278,7 @@ interface QuickPickParameters<T extends QuickPickItem> {
 	step: number;
 	totalSteps: number;
 	items: T[];
-	activeItem?: T;
+	activeItem?: T ;
 	ignoreFocusOut?: boolean;
 	placeholder: string;
 	buttons?: QuickInputButton[];
