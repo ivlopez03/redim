@@ -2,11 +2,15 @@
   "name": "redim",
   "displayName": "Redim",
   "description": "High performance image processing easily by using the command line.",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "publisher": "Redimvs",
   "icon": "Redim_logo.png",
   "pricing": "Free",
   "license":"Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ivlopez03/redim.git"
+  },
   "engines": {
     "vscode": "^1.89.0"
   },
@@ -18,23 +22,10 @@
   "contributes": {
     "commands": [
       {
-        "command": "redim.redim",
+        "command": "redim",
         "title": "Redim Optimizer"
-      },
-      {
-        "command": "redim.optimizeImageWithOptions",
-        "title": "Optimize Image (With Options)"
       }
-    ],
-    "menus": {
-      "explorer/context": [
-        {
-          "command": "redim.optimizeImageWithOptions",
-          "when": "resourceLangId == image || resourceExt == .png || resourceExt == .jpg || resourceExt == .jpeg || resourceExt == .webp",
-          "group": "image-optimization"
-        }
-      ]
-    }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

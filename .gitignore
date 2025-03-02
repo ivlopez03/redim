@@ -4,3 +4,4 @@ node_modules
 .vscode-test/
 *.vsix
 .env
+redim-2.0.1.vsix

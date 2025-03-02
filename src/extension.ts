@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { optimizeFile } from './optmizeSingleFile';
 import { optimizeAllFiles} from './optimizeAllFiles';
-import { optimizeImageExplorer } from './optimizeImageExplorer';
+//import { optimizeImageExplorer } from './optimizeImageExplorer';
 import { window,commands, ExtensionContext } from 'vscode';
 
 
@@ -9,7 +9,7 @@ import { window,commands, ExtensionContext } from 'vscode';
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 
-	context.subscriptions.push(commands.registerCommand('redim.redim', async () => {
+	context.subscriptions.push(commands.registerCommand('redim', async () => {
 		const options: { [key: string]: (context: ExtensionContext) => Promise<void> } = {
 			optimizeFile,
 			optimizeAllFiles,
@@ -25,8 +25,7 @@ export function activate(context: vscode.ExtensionContext) {
 		});
 		quickPick.onDidHide(() => quickPick.dispose());
 		quickPick.show();
-	},
-	optimizeImageExplorer
+	}
 	
 ));
 
