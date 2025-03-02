@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
-import { optimizedSelectedFile } from './testquickinput';
-import { optimizeAllFiles} from './test02';
+import { optimizeFile } from './optmizeSingleFile';
+import { optimizeAllFiles} from './optimizeAllFiles';
+import { optimizeImageExplorer } from './optimizeImageExplorer';
 import { window,commands, ExtensionContext } from 'vscode';
 
 
@@ -10,8 +11,9 @@ export function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(commands.registerCommand('redim.redim', async () => {
 		const options: { [key: string]: (context: ExtensionContext) => Promise<void> } = {
-			optimizedSelectedFile,
-			optimizeAllFiles,	
+			optimizeFile,
+			optimizeAllFiles,
+
 		};
 		const quickPick = window.createQuickPick();
 		quickPick.items = Object.keys(options).map(label => ({ label }));
@@ -23,7 +25,10 @@ export function activate(context: vscode.ExtensionContext) {
 		});
 		quickPick.onDidHide(() => quickPick.dispose());
 		quickPick.show();
-	}));
+	},
+	optimizeImageExplorer
+	
+));
 
 }
 
